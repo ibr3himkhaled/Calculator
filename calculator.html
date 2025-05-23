@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CalcIt</title>
+    <style>
+        .calculator {
+            width: 300px;
+            margin: 50px auto;
+            background: #EDEDED;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .display {
+            width: 100%;
+            height: 60px;
+            margin-bottom: 20px;
+            background: #212121;
+            color: white;
+            text-align: right;
+            font-family: 'Arial Bold', Arial, sans-serif;
+            font-size: 24px;
+            padding: 10px;
+            box-sizing: border-box;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            padding: 15px;
+            font-size: 18px;
+            border: none;
+            background: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <input type="text" class="display" readonly>
+        <div class="buttons">
+            <button>7</button>
+            <button>8</button>
+            <button>9</button>
+            <button>÷</button>
+            <button>4</button>
+            <button>5</button>
+            <button>6</button>
+            <button>×</button>
+            <button>1</button>
+            <button>2</button>
+            <button>3</button>
+            <button>-</button>
+            <button>0</button>
+            <button>.</button>
+            <button>=</button>
+            <button>+</button>
+            <button>C</button>
+        </div>
+    </div>
+
+    <script>
+        const display = document.querySelector('.display');
+        const buttons = document.querySelectorAll('button');
+        let currentInput = '';
+        let previousInput = '';
+        let operation = null;
+
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const value = button.textContent;
+
+                if (value >= '0' && value <= '9' || value === '.') {
+                    currentInput += value;
+                    display.value = currentInput;
+                } else if (value === 'C') {
+                    currentInput = '';
+                    previousInput = '';
+                    operation = null;
+                    display.value = '';
+                } else if (value === '=' && operation) {
+                    const prev = parseFloat(previousInput);
+                    const current = parseFloat(currentInput);
+                    let result;
+
+                    switch(operation) {
+                        case '+':
+                            result = prev + current;
+                            break;
+                        case '-':
+                            result = prev - current;
+                            break;
+                        case '×':
+                            result = prev * current;
+                            break;
+                        case '÷':
+                            if (current === 0) {
+                                alert('Cannot divide by zero');
+                                return;
+                            }
+                            result = prev / current;
+                            break;
+                    }
+
+                    display.value = result;
+                    currentInput = result.toString();
+                    previousInput = '';
+                    operation = null;
+                } else if (['+', '-', '×', '÷'].includes(value)) {
+                    previousInput = currentInput;
+                    currentInput = '';
+                    operation = value;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
